@@ -9,22 +9,26 @@
     />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function() {
-            $('#commentForm').on('submit', function(event) {
-                event.preventDefault();
-                $.ajax({
-                    url: '/comment_detector',
-                    type: 'POST',
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        $('#result').html('Result: ' + response.prediction);
-                    },
-                    error: function() {
-                        $('#result').html('An error occurred. Please try again.');
-                    }
-                });
+      $(document).ready(function () {
+        $('#commentInput').on('keyup', function (event) {
+          const comment = $(this).val();
+          if (comment.length > 0) {
+            $.ajax({
+              url: '/comment_detector',
+              type: 'POST',
+              data: { comment: comment },
+              success: function (response) {
+                $('#result').html('Result: ' + response.prediction);
+              },
+              error: function () {
+                $('#result').html('An error occurred. Please try again.');
+              },
             });
+          } else {
+            $('#result').html('');
+          }
         });
+      });
     </script>
   </head>
 
@@ -73,9 +77,7 @@
           
               1)Enter the comment you want to check in the text box below.
 
-              2)Click the "Test Comment" button.
-
-              3)The model will analyze the comment and provide a result indicating whether it is toxic 
+              2)The model will analyze the comment and provide a result indicating whether it is toxic 
               or non-toxic.
 
           Feel free to try it out and see how it works!
@@ -83,23 +85,27 @@
       </div>
 
       <div class="mt-3 text-white" id="comment_detector">
-        <form id="commentForm"
+        <form
           class="row g-3 d-flex justify-content-center align-items-center"
           action="/comment_detector"
           method="post"
         >
           <div class="col-8">
-            <textarea class="form-control border-primary" name="comment" placeholder="Enter your comment here..." required id="commentInput" rows="5"></textarea>
-          </div>
-          <div class="col-8 d-flex justify-content-center align-items-center">
-            <input class="btn btn-primary" type="submit" value="Test Comment" />
+            <textarea
+              class="form-control border-primary"
+              name="comment"
+              placeholder="Enter your comment here..."
+              required
+              id="commentInput"
+              rows="4"
+            ></textarea>
           </div>
         </form>
       </div>
 
-      <div class="mt-4 text-white text-center" id="result"></div>
+      <div class="mt-5 text-white text-center" id="result"></div>
 
-      <div class="mt-4 text-white" id="terms">
+      <div class="mt-5 text-white" id="terms">
         <pre>
         Terms and Conditions:
             By using the Toxic Comment Detector, you agree to the following terms and conditions:
@@ -119,7 +125,7 @@
       </pre>
       </div>
 
-      <div class="mt-3 mb-3 text-white text-center">
+      <div class="mt-5 mb-3 text-white text-center">
         <div>
           ©2024 All rights reserved.<br />
           Toxic Comment Detection
